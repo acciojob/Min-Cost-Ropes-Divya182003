@@ -1,22 +1,27 @@
 function mincost(arr) {
-    arr.sort((a, b) => a - b);
-    let cost = 0;
+    // Use a Min Heap to always get the two smallest ropes
+    let minHeap = [...arr];
+    minHeap.sort((a, b) => a - b); // Initially sort the array to simulate a heap
 
-    while (arr.length > 1) {
-        let first = arr.shift();
-        let second = arr.shift();
-        let sum = first + second;
-        cost += sum;
-        
-        // Insert back in sorted position (binary insertion for better perf could be added)
-        let i = 0;
-        while (i < arr.length && arr[i] < sum) i++;
-        arr.splice(i, 0, sum);
+    let totalCost = 0;
+
+    while (minHeap.length > 1) {
+        // Extract the two smallest ropes
+        let first = minHeap.shift();
+        let second = minHeap.shift();
+
+        // Combine them
+        let cost = first + second;
+        totalCost += cost;
+
+        // Insert the new rope back into the heap and sort again
+        minHeap.push(cost);
+        minHeap.sort((a, b) => a - b);
     }
 
-    return cost;
+    return totalCost;
 }
 
 // Example usage:
-console.log(mincost([4, 3, 2, 6]));     // Output: 29
-console.log(mincost([1, 2, 3, 4, 5]));  // Output: 33
+console.log(mincost([4, 3, 2, 6])); // Output: 29
+console.log(mincost([1, 2, 3, 4, 5])); // Output: 33
